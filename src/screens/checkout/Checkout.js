@@ -10,7 +10,9 @@ import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
+import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
+import PropTypes from 'prop-types';
 // import Header
 
 const styles = theme => ({
@@ -55,7 +57,7 @@ class Checkout extends Component {
     super();
     this.state = {
         activeStep:0,
-        tabvalue:0,
+        tabValue:0,
         existingAddress:[],
 
     };
@@ -64,6 +66,8 @@ class Checkout extends Component {
     render(){
         const { classes } = this.props;
         const steps = getSteps();
+        const { activeStep } = this.state;
+        const { tabValue } = this.state;
         
         return (
             <div>
@@ -79,7 +83,7 @@ class Checkout extends Component {
                                         {index === 0 ?  
                                         <div className={classes.tabRoot}>
                                             <AppBar position='static'>
-                                                <Tabs value={tabvalue}>
+                                                <Tabs value={tabValue}>
                                                     <Tab label='EXISTING ADDRESS' />
                                                     <Tab label='NEW ADDRESS' />
                                                 </Tabs>

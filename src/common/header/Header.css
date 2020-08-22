@@ -24,10 +24,18 @@
     color:white
 }
 
+.login_btn {
+    float: left;
+    margin-left: 700px;
+}
+
 .search_btn {
-    float: right;
+    float: left;
+    margin-left: 700px;
 }
 
 .fast_food {
     font-size: 35px !important;
+    float: left;
 }
+

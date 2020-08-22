@@ -1,0 +1,33 @@
+.header {
+    padding: 20px;
+    background: #263238;
+    color: #fff;
+    font-size: 22px;
+    height: 40px;
+}
+
+.searchBar {
+    float: right;
+    margin-right: 75px;
+}
+
+.profileIcon {
+    float: right;
+    margin-top: -60px;
+    height: 50px;
+    width: 50px;
+    margin-right: -50px;
+}
+
+.headerName {
+    cursor: pointer;
+    color:white
+}
+
+.search_btn {
+    float: right;
+}
+
+.fast_food {
+    font-size: 35px !important;
+}

@@ -11,17 +11,18 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     width: 300,
-    background: '#c0c0c0'
+    background: '#273238'
   },
   input: {
     marginLeft: theme.spacing(1),
     flex: 1,
+    color: 'white'
   },
   iconButton: {
     padding: 10,
   },
   iconColor: {
-    color: 'black',
+    color: 'white',
   },
   divider: {
     height: 28,
@@ -39,7 +40,7 @@ export default function SearchBar() {
       </IconButton>
       <InputBase
         className={classes.input}
-        placeholder="Search..."
+        placeholder="Search By Restaurant Name"
         inputProps={{ 'aria-label': 'search google maps' }}
       />
     </Paper>

@@ -10,12 +10,28 @@ import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
+import GridListTile from '@material-ui/core/GridListTile';
 // import Header
 
 const styles = theme => ({
     root: {
-      width: "100%",
-    }
+        width: "100%",
+    },
+
+    gridList: {
+        flexWrap: 'nowrap',
+        transform: 'translateZ(0)',
+        overflowY: 'hidden',
+    },
+
+    existingAddressGridListTile: {
+        marginBottom: '50px',
+        cursor: 'pointer',
+    },
+
+    existingAddressGridListClass: {
+        padding: '25px',
+    },
 });
 
 function getSteps() {
@@ -33,7 +49,6 @@ function TabContainer(props) {
 TabContainer.propTypes = {
     children: PropTypes.node.isRequired,
 };
-
 
 class Checkout extends Component {
     constructor(){
@@ -71,13 +86,39 @@ class Checkout extends Component {
                                             </AppBar>
 
                                             {tabValue===0 &&
-                                                <TabContainer>
+                                                <TabContainer className={classes.existingAddressTabContainer}>
                                                     {this.state.existingAddress===null ?
                                                         <Typography variant='h6' color='textSecondary'>
                                                             There are no saved addresses! You can save an address using the 'New Address' tab or using your 'Profile' menu option.
                                                         </Typography>
                                                         :
-                                                        }
+                                                        <GridList className={classes.gridList} cols={3} cellHeight='auto'>
+                                                            {this.state.existingAddress.map(address => (
+                                                                <GridListTile
+                                                                    key={'address' + address.id}
+                                                                    id={this.state[address.id] || 'unselect-address'}
+                                                                    className={classes.existingAddressGridListTile}>
+                                                                    <Typography variant='subtitle1'>
+                                                                        {address.flat_building_name}
+                                                                    </Typography>
+
+                                                                    <Typography variant='subtitle1'>
+                                                                        {address.locality}
+                                                                    </Typography>
+
+                                                                    <Typography variant='subtitle1'>
+                                                                        {address.city}
+                                                                    </Typography>
+
+                                                                    <Typography variant='subtitle1'>
+                                                                        {address.state.state_name}
+                                                                    </Typography>
+
+                                                                    <Typography variant='subtitle1'>
+                                                                        {address.pincode}
+                                                                    </Typography>
+                                                            )}
+                                                        </GridList>}
                                                 </TabContainer>
                                             }
                                         </div>

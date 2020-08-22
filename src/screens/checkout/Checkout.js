@@ -117,12 +117,13 @@ class Checkout extends Component {
                                                                     <Typography variant='subtitle1'>
                                                                         {address.pincode}
                                                                     </Typography>
-                                                            )}
+                                                                </GridListTile>
+                                                            ))}
                                                         </GridList>}
                                                 </TabContainer>
                                             }
-                                        </div>
-                                        :''}
+                                        </div> 
+                                        : " "}
                                     </StepContent>
                                 </Step>
                             ))}

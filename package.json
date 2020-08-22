@@ -4,10 +4,13 @@
   "private": true,
   "dependencies": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.4.1"
 =======
+=======
+>>>>>>> 72e21989cbfa4d184ed185d2f54f19491d0e2a16
     "@material-ui/core": "^4.11.0",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "material-ui": "^0.20.2",
@@ -17,7 +20,10 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
     "typescript": "^3.9.7"
+<<<<<<< HEAD
 >>>>>>> Added existing and new address tabs
+=======
+>>>>>>> 72e21989cbfa4d184ed185d2f54f19491d0e2a16
   },
   "scripts": {
     "start": "react-scripts start",

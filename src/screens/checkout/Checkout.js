@@ -75,7 +75,7 @@ const styles = theme => ({
     },
 
     payGroup: {
-        margin: `${theme.spacing.unit}px 0`,
+        margin: theme.spacing(0),
     },
 });
 
@@ -124,7 +124,7 @@ class Checkout extends Component {
         pincode: '',
         states: [],
         paymentModes: [],
-        radioValue: '',
+        payValue: '',
 
     };
 }

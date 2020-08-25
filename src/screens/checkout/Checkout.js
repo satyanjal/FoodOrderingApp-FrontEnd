@@ -168,7 +168,6 @@ class Checkout extends Component {
                                                                 type='text'
                                                                 flatno={this.state.flatBuildingNo}
                                                                 value={this.state.flatBuildingNo}/>
-                                                        </InputLabel>
                                                     </FormControl>
                                                 </TabContainer>
                                             }

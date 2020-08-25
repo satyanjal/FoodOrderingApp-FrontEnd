@@ -3,7 +3,7 @@ import './Checkout.css';
 import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import Step from '@material-ui/core/Step';
 import Stepper from '@material-ui/core/Stepper';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import PropTypes from 'prop-types';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 // import Header
 
 const styles = theme => ({
@@ -33,6 +34,20 @@ const styles = theme => ({
 
     existingAddressGridListClass: {
         padding: '25px',
+    },
+
+    existingAddressTabContainer: {
+        float: 'left',
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+        overflow: 'hidden',
+        backgroundColor: theme.palette.background.paper,
+    },
+
+    check: {
+        float: 'right',
+        marginRight: '10px',
     },
 });
 
@@ -59,9 +74,23 @@ class Checkout extends Component {
         activeStep:0,
         tabValue:0,
         existingAddress:[],
+        flatBuildingNo: '',
 
     };
 }
+
+    existingAddressOnClickHandler = (addressId) => {
+        this.setState({
+            [this.state.selectedExistingAddress]: 'unselect-address',
+            selectedExistingAddress: addressId,
+            [addressId]: 'select-address',
+        });
+    };
+
+    tabHandler = (event, value) => {
+        this.setState({ tabValue: value });
+    };
+
 
     render(){
         const { classes } = this.props;
@@ -83,7 +112,7 @@ class Checkout extends Component {
                                         {index === 0 ?  
                                         <div className={classes.tabRoot}>
                                             <AppBar position='static'>
-                                                <Tabs value={tabValue}>
+                                                <Tabs value={tabValue} onChange={this.tabHandler}>
                                                     <Tab label='EXISTING ADDRESS' />
                                                     <Tab label='NEW ADDRESS' />
                                                 </Tabs>
@@ -92,8 +121,9 @@ class Checkout extends Component {
                                             {tabValue===0 &&
                                                 <TabContainer className={classes.existingAddressTabContainer}>
                                                     {this.state.existingAddress===null ?
-                                                        <Typography variant='h6' color='textSecondary'>
-                                                            There are no saved addresses! You can save an address using the 'New Address' tab or using your 'Profile' menu option.
+                                                        <Typography variant='h6' color='black'>
+                                                            There are no saved addresses! You can save an address using the 'New Address' 
+                                                            tab or using your 'Profile' menu option.
                                                         </Typography>
                                                         :
                                                         <GridList className={classes.gridList} cols={3} cellHeight='auto'>
@@ -101,29 +131,45 @@ class Checkout extends Component {
                                                                 <GridListTile
                                                                     key={'address' + address.id}
                                                                     id={this.state[address.id] || 'unselect-address'}
-                                                                    className={classes.existingAddressGridListTile}>
+                                                                    className={classes.existingAddressGridListTile}
+                                                                    classes={classes.existingAddressGridListTileTile}
+                                                                    onClick={() => this.existingAddressOnClickHandler(address.id)}>
                                                                     <Typography variant='subtitle1'>
                                                                         {address.flat_building_name}
                                                                     </Typography>
-
                                                                     <Typography variant='subtitle1'>
                                                                         {address.locality}
                                                                     </Typography>
-
                                                                     <Typography variant='subtitle1'>
                                                                         {address.city}
                                                                     </Typography>
-
                                                                     <Typography variant='subtitle1'>
                                                                         {address.state.state_name}
                                                                     </Typography>
-
                                                                     <Typography variant='subtitle1'>
                                                                         {address.pincode}
                                                                     </Typography>
+                                                                    <CheckCircleIcon
+                                                                        className={classes.check}
+                                                                        nativeColor={this.state[address.id] === 'select-address' ? 'green' : 'grey'}
+                                                                    />
                                                                 </GridListTile>
                                                             ))}
                                                         </GridList>}
+                                                </TabContainer>
+                                            }
+
+                                            {tabValue === 1 &&
+                                                <TabContainer>
+                                                    <FormControl required>
+                                                        <InputLabel htmlFor='flatBuildingNo'>Flat / Building No.</InputLabel>
+                                                            <Input
+                                                                id='flatBuildingNo'
+                                                                type='text'
+                                                                flatno={this.state.flatBuildingNo}
+                                                                value={this.state.flatBuildingNo}/>
+                                                        </InputLabel>
+                                                    </FormControl>
                                                 </TabContainer>
                                             }
                                         </div> 

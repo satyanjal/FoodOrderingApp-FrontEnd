@@ -80,6 +80,9 @@ class Checkout extends Component {
         existingAddress:[],
         flatBuildingNo: '',
         flatBuildingNoRequired: 'display-none',
+        localityRequired: 'display-none',
+        locality: '',
+            
 
     };
 }
@@ -98,6 +101,10 @@ class Checkout extends Component {
 
     flatBuildingNoHandler = event => {
         this.setState({ flatBuildingNo: event.target.value });
+    };
+
+    localityHandler = event => {
+        this.setState({ locality: event.target.value });
     };
 
     render(){
@@ -177,10 +184,27 @@ class Checkout extends Component {
                                                                 flatno={this.state.flatBuildingNo}
                                                                 value={this.state.flatBuildingNo}
                                                                 onChange={this.flatBuildingNoHandler}/>
-                                                            <FormHelperText className={this.state.flatBuildingNoRequired} error={true}>
-                                                                <span>required</span>
-                                                            </FormHelperText>
+                                                        <FormHelperText className={this.state.flatBuildingNoRequired} error={true}>
+                                                            <span>required</span>
+                                                        </FormHelperText>
                                                     </FormControl>
+                                                    <br /><br />
+
+                                                    <FormControl required>
+                                                        <InputLabel htmlFor='locality'>Locality</InputLabel>
+                                                            <Input
+                                                                id='locality'
+                                                                type='text'
+                                                                locality={this.state.locality}
+                                                                value={this.state.locality}
+                                                                onChange={this.localityHandler}/>
+                                                        <FormHelperText className={this.state.localityRequired} error={true}>
+                                                            <span>required</span>
+                                                        </FormHelperText>
+                                                    </FormControl>                                                            <br /><br />
+                                                    <br /><br />
+
+                                                    
                                                 </TabContainer>
                                             }
                                         </div> 

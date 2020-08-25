@@ -25,6 +25,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
+import {constants} from '../../common/util'
 //import MenuProps from '@material-ui/core/'
 // import Header
 
@@ -114,29 +115,49 @@ TabContainer.propTypes = {
 };
 
 class Checkout extends Component {
-    constructor(){
-    super();
-    this.state = {
-        activeStep:0,
-        tabValue:0,
-        existingAddress:[],
-        flatBuildingNo: '',
-        flatBuildingNoRequired: 'display-none',
-        localityRequired: 'display-none',
-        locality: '',
-        cityRequired: 'display-none',
-        city: '',
-        stateRequired: 'display-none',
-        newAddressState: '',
-        pincodeRequired: 'display-none',
-        pincodeRequiredMsg: 'required',
-        pincode: '',
-        states: [],
-        paymentModes: [],
-        payValue: '',
+    constructor(props){
+        super(props);
+        this.state = {
+            activeStep:0,
+            tabValue:0,
+            existingAddress:[],
+            flatBuildingNo: '',
+            flatBuildingNoRequired: 'display-none',
+            localityRequired: 'display-none',
+            locality: '',
+            cityRequired: 'display-none',
+            city: '',
+            stateRequired: 'display-none',
+            newAddressState: '',
+            pincodeRequired: 'display-none',
+            pincodeRequiredMsg: 'required',
+            pincode: '',
+            states: [],
+            paymentModes: [],
+            payValue: '',
+        };
+    }
 
+    componentDidMount(){
+        this.getStates();
     };
-}
+
+    getStates = () => {
+        let that = this;
+        let url = `${constants.api}/states`;
+        return fetch(url,{
+            method:'GET',
+        }).then((response) =>{
+            return response.json();
+        }).then((jsonResponse) =>{
+            that.setState({
+                states: jsonResponse.states
+            });
+            //console.log(that.state.states);
+        }).catch((error) => {
+            console.log('error user data',error);
+        });
+    };
 
     existingAddressOnClickHandler = (addressId) => {
         this.setState({
@@ -234,16 +255,18 @@ class Checkout extends Component {
             }
         }
 
-        //let that = this;
-        let dataNewAddress = {
-            'city': this.state.city,
-            'flat_building_name': this.state.flatBuildingNo,
-            'locality': this.state.locality,
-            'pincode': this.state.pincode,
-            'state_uuid': stateUUID
-        }
+        // let that = this;
+        // let dataNewAddress = {
+        //     'city': this.state.city,
+        //     'flat_building_name': this.state.flatBuildingNo,
+        //     'locality': this.state.locality,
+        //     'pincode': this.state.pincode,
+        //     'state_uuid': stateUUID
+        // }
+
     };
 
+    
     payChangeHandler = event => {
         this.setState({ radioValue: event.target.value });
     };
@@ -257,6 +280,10 @@ class Checkout extends Component {
         const steps = getSteps();
         const { activeStep } = this.state;
         const { tabValue } = this.state;
+        let statesList =  this.state.states.map(state => (
+            <MenuItem key={'state' + state.id} value={state.state_name}>                                                                            {state.state_name}
+            </MenuItem>
+            ));
         
         return (
             <div>
@@ -372,11 +399,7 @@ class Checkout extends Component {
                                                                 onChange={this.stateHandler}
                                                                 className={classes.selectNewAddressState}>
                                                                 {/* MenuProps={MenuProps} */}
-                                                                
-                                                            {this.state.states.map(state => (
-                                                                <MenuItem key={'state' + state.id} value={state.state_name}>                                                                            {state.state_name}
-                                                                </MenuItem>
-                                                                ))}
+                                                                {statesList}
                                                             </Select>
                                                         <FormHelperText className={this.state.stateRequired} error={true}>
                                                             <span>required</span>
@@ -441,7 +464,7 @@ class Checkout extends Component {
                                                     disabled={activeStep === 0}  
                                                     className={classes.stepperButton}>
                                                         Back
-                                                    </Button>
+                                                </Button>
                                                 <Button
                                                     variant='contained'
                                                     color='primary'

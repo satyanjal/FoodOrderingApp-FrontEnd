@@ -138,6 +138,10 @@ class Checkout extends Component {
         };
     }
 
+    preState = {
+        activeStep: 0,
+    };
+
     componentDidMount(){
         this.getStates();
     };
@@ -289,13 +293,18 @@ class Checkout extends Component {
 
     };
 
-    
     payChangeHandler = event => {
         this.setState({ radioValue: event.target.value });
     };
 
     payClickHandler = (paymentId) => {
         this.setState({ selectedPaymentMode: paymentId });
+    };
+
+    backHandler = () => {
+        this.setState(preState => ({
+            activeStep: preState.activeStep - 1,
+        }));
     };
 
     render(){
@@ -485,7 +494,8 @@ class Checkout extends Component {
                                             <div>
                                                 <Button
                                                     disabled={activeStep === 0}  
-                                                    className={classes.stepperButton}>
+                                                    className={classes.stepperButton}
+                                                    onClick={this.backHandler}>
                                                         Back
                                                 </Button>
                                                 <Button

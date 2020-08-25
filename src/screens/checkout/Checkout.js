@@ -18,6 +18,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 // import Header
 
 const styles = theme => ({
@@ -53,7 +55,21 @@ const styles = theme => ({
         float: 'right',
         marginRight: '10px',
     },
+
+    selectNewAddressState: {
+        width: '190px',
+    },
 });
+
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: 48 * 4 + 8,
+            width: 250,
+        },
+    },
+};
+
 
 function getSteps() {
     return ['Delivery', 'Payment'];
@@ -82,7 +98,14 @@ class Checkout extends Component {
         flatBuildingNoRequired: 'display-none',
         localityRequired: 'display-none',
         locality: '',
-            
+        cityRequired: 'display-none',
+        city: '',
+        stateRequired: 'display-none',
+        newAddressState: '',
+        pincodeRequired: 'display-none',
+        pincodeRequiredMsg: 'required',
+        pincode: '',
+        states: [],
 
     };
 }
@@ -105,6 +128,18 @@ class Checkout extends Component {
 
     localityHandler = event => {
         this.setState({ locality: event.target.value });
+    };
+
+    cityHandler = event => {
+        this.setState({ city: event.target.value });
+    };
+
+    stateHandler = event => {
+        this.setState({ newAddressState: event.target.value });
+    };
+
+    pincodeHandler = event => {
+        this.setState({ pincode: event.target.value });
     };
 
     render(){
@@ -204,7 +239,55 @@ class Checkout extends Component {
                                                     </FormControl>                                                            <br /><br />
                                                     <br /><br />
 
-                                                    
+                                                    <FormControl required>
+                                                        <InputLabel htmlFor='city'>City</InputLabel>
+                                                            <Input
+                                                                id='city'
+                                                                type='text'
+                                                                city={this.state.city}
+                                                                value={this.state.city}
+                                                                onChange={this.cityHandler}/>
+                                                        <FormHelperText className={this.state.cityRequired} error={true}>
+                                                            <span>required</span>
+                                                        </FormHelperText>  
+                                                    </FormControl>                               
+                                                    <br /><br />
+
+                                                    <FormControl required>
+                                                        <InputLabel htmlFor='newAddressstate'>State</InputLabel>
+                                                            <Select
+                                                                id='newAddressstate'
+                                                                newaddressstate={this.state.newAddressState}
+                                                                value={this.state.newAddressState}
+                                                                onChange={this.stateHandler}
+                                                                className={classes.selectNewAddressState}
+                                                                MenuProps={MenuProps}
+                                                            >
+                                                            {this.state.states.map(state => (
+                                                                <MenuItem key={'state' + state.id} value={state.state_name}>                                                                            {state.state_name}
+                                                                </MenuItem>
+                                                                ))}
+                                                            </Select>
+                                                        <FormHelperText className={this.state.stateRequired} error={true}>
+                                                            <span>required</span>
+                                                        </FormHelperText>
+                                                    </FormControl>
+                                                    <br /><br />
+
+                                                    <FormControl required>
+                                                        <InputLabel htmlFor='pincode'>Pincode</InputLabel>
+                                                            <Input
+                                                                id='pincode'
+                                                                type='text'
+                                                                pincode={this.state.pincode}
+                                                                value={this.state.pincode}
+                                                                onChange={this.pincodeHandler}
+                                                            />
+                                                        <FormHelperText className={this.state.pincodeRequired} error={true}>
+                                                            <span>{this.state.pincodeRequiredMsg}</span>
+                                                        </FormHelperText>
+                                                    </FormControl>
+                                                    <br /><br />
                                                 </TabContainer>
                                             }
                                         </div> 

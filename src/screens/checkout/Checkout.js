@@ -135,6 +135,8 @@ class Checkout extends Component {
             states: [],
             paymentModes: [],
             payValue: '',
+            selectedExistingAddress: null,
+            selectedPaymentMode: null,
         };
     }
 
@@ -304,6 +306,20 @@ class Checkout extends Component {
     backHandler = () => {
         this.setState(preState => ({
             activeStep: preState.activeStep - 1,
+        }));
+    };
+
+    stepperNextHandler = () => {   
+        if (this.state.activeStep === 0 && this.state.selectedExistingAddress === null) {
+            return;
+        }
+
+        if (this.state.activeStep === 1 && this.state.selectedPaymentMode === null) {
+            return;
+        }
+
+        this.setState(preState => ({
+            activeStep: preState.activeStep + 1,
         }));
     };
 

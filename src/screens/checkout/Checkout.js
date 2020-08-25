@@ -14,6 +14,10 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import PropTypes from 'prop-types';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
 // import Header
 
 const styles = theme => ({
@@ -75,6 +79,7 @@ class Checkout extends Component {
         tabValue:0,
         existingAddress:[],
         flatBuildingNo: '',
+        flatBuildingNoRequired: 'display-none',
 
     };
 }
@@ -91,6 +96,9 @@ class Checkout extends Component {
         this.setState({ tabValue: value });
     };
 
+    flatBuildingNoHandler = event => {
+        this.setState({ flatBuildingNo: event.target.value });
+    };
 
     render(){
         const { classes } = this.props;
@@ -167,7 +175,11 @@ class Checkout extends Component {
                                                                 id='flatBuildingNo'
                                                                 type='text'
                                                                 flatno={this.state.flatBuildingNo}
-                                                                value={this.state.flatBuildingNo}/>
+                                                                value={this.state.flatBuildingNo}
+                                                                onChange={this.flatBuildingNoHandler}/>
+                                                            <FormHelperText className={this.state.flatBuildingNoRequired} error={true}>
+                                                                <span>required</span>
+                                                            </FormHelperText>
                                                     </FormControl>
                                                 </TabContainer>
                                             }

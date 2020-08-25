@@ -20,6 +20,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import Button from '@material-ui/core/Button';
+import MenuProps from '@material-ui/core/'
 // import Header
 
 const styles = theme => ({
@@ -61,7 +63,7 @@ const styles = theme => ({
     },
 });
 
-const MenuProps = {
+const menu = {
     PaperProps: {
         style: {
             maxHeight: 48 * 4 + 8,
@@ -140,6 +142,80 @@ class Checkout extends Component {
 
     pincodeHandler = event => {
         this.setState({ pincode: event.target.value });
+    };
+
+    saveAddressClickHandler = () => {
+        let flatBuildingNoReq = false;
+        if (this.state.flatBuildingNo === '') {
+            this.setState({ flatBuildingNoRequired: 'display-block' });
+            flatBuildingNoReq = true;
+        } else {
+            this.setState({ flatBuildingNoRequired: 'display-none' });
+        }
+
+        let localityReq = false;
+        if (this.state.locality === '') {
+            this.setState({ localityRequired: 'display-block' });
+            localityReq = true;
+        } else {
+            this.setState({ localityRequired: 'display-none' });
+        }
+
+        let cityReq = false;
+        if (this.state.city === '') {
+            this.setState({ cityRequired: 'display-block' });
+            cityReq = true;
+        } else {
+            this.setState({ cityRequired: 'display-none' });
+        }
+
+        let stateReq = false;
+        if (this.state.newAddressState === '') {
+            this.setState({ stateRequired: 'display-block' });
+            stateReq = true;
+        } else {
+            this.setState({ stateRequired: 'display-none' });
+        }
+
+        let pincodeReq = false;
+        if (this.state.pincode === '') {
+            this.setState({
+                pincodeRequired: 'display-block',
+                pincodeRequiredMsg: 'required'
+            });
+            pincodeReq = true;
+        } else {
+            this.setState({ pincodeRequired: 'display-none' });
+        }
+
+        let validatePincode = new RegExp('^[1-9][0-9]{5}$');
+        if (pincodeReq === false && validatePincode.test(this.state.pincode) === false) {
+            this.setState({
+                pincodeRequired: 'display-block',
+                pincodeRequiredMsg: 'Pincode must contain only numbers and must be 6 digits long'
+            });
+            return;
+        }
+
+        if (flatBuildingNoReq || localityReq || cityReq || stateReq || pincodeReq) {
+            return;
+        }
+
+        let stateUUID = '';
+        for (let state of this.state.states) {
+            if (state.state_name === this.state.newAddressState) {
+                stateUUID = state.id;
+            }
+        }
+
+        //let that = this;
+        let dataNewAddress = {
+            'city': this.state.city,
+            'flat_building_name': this.state.flatBuildingNo,
+            'locality': this.state.locality,
+            'pincode': this.state.pincode,
+            'state_uuid': stateUUID
+        }
     };
 
     render(){
@@ -261,8 +337,7 @@ class Checkout extends Component {
                                                                 value={this.state.newAddressState}
                                                                 onChange={this.stateHandler}
                                                                 className={classes.selectNewAddressState}
-                                                                MenuProps={MenuProps}
-                                                            >
+                                                                MenuProps={menu}>
                                                             {this.state.states.map(state => (
                                                                 <MenuItem key={'state' + state.id} value={state.state_name}>                                                                            {state.state_name}
                                                                 </MenuItem>
@@ -291,7 +366,8 @@ class Checkout extends Component {
 
                                                     <Button
                                                         variant='contained'
-                                                        color='secondary'>
+                                                        color='secondary'
+                                                        onClick={this.saveAddressClickHandler}>
                                                         Save Address
                                                     </Button>
                                                 </TabContainer>

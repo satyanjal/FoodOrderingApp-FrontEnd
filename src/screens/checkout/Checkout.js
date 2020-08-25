@@ -21,7 +21,11 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import MenuProps from '@material-ui/core/'
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import Radio from '@material-ui/core/Radio';
+//import MenuProps from '@material-ui/core/'
 // import Header
 
 const styles = theme => ({
@@ -61,17 +65,28 @@ const styles = theme => ({
     selectNewAddressState: {
         width: '190px',
     },
+
+    paydisplay: {
+        display: 'flex',
+    },
+
+    payFormControl: {
+        margin: theme.spacing(3),
+    },
+
+    payGroup: {
+        margin: `${theme.spacing.unit}px 0`,
+    },
 });
 
-const menu = {
-    PaperProps: {
-        style: {
-            maxHeight: 48 * 4 + 8,
-            width: 250,
-        },
-    },
-};
-
+// const MenuProps = {
+//     PaperProps: {
+//         style: {
+//             maxHeight: 48 * 4 + 8,
+//             width: 250,
+//         },
+//     },
+// };
 
 function getSteps() {
     return ['Delivery', 'Payment'];
@@ -108,6 +123,8 @@ class Checkout extends Component {
         pincodeRequiredMsg: 'required',
         pincode: '',
         states: [],
+        paymentModes: [],
+        radioValue: '',
 
     };
 }
@@ -216,6 +233,14 @@ class Checkout extends Component {
             'pincode': this.state.pincode,
             'state_uuid': stateUUID
         }
+    };
+
+    payChangeHandler = event => {
+        this.setState({ radioValue: event.target.value });
+    };
+
+    payClickHandler = (paymentId) => {
+        this.setState({ selectedPaymentMode: paymentId });
     };
 
     render(){
@@ -336,8 +361,9 @@ class Checkout extends Component {
                                                                 newaddressstate={this.state.newAddressState}
                                                                 value={this.state.newAddressState}
                                                                 onChange={this.stateHandler}
-                                                                className={classes.selectNewAddressState}
-                                                                MenuProps={menu}>
+                                                                className={classes.selectNewAddressState}>
+                                                                {/* MenuProps={MenuProps} */}
+                                                                
                                                             {this.state.states.map(state => (
                                                                 <MenuItem key={'state' + state.id} value={state.state_name}>                                                                            {state.state_name}
                                                                 </MenuItem>
@@ -374,6 +400,33 @@ class Checkout extends Component {
                                             }
                                         </div> 
                                         : " "}
+
+                                        {index === 1 ?
+                                            <div className={classes.paydisplay}>
+                                                <FormControl component='fieldset' className={classes.payFormControl}>
+                                                    <FormLabel component='legend'>Select Mode of Payment</FormLabel>
+                                                    <RadioGroup
+                                                        aria-label='paymentModes'
+                                                        name='paymentModes'
+                                                        className={classes.payGroup}
+                                                        value={this.state.payValue}
+                                                        onChange={this.payChangeHandler}
+                                                    >
+                                                    {this.state.paymentModes.map(paymentMode => (
+                                                        <FormControlLabel
+                                                            key={'paymentMode' + paymentMode.id}
+                                                            value={paymentMode.payment_name.toLowerCase()}
+                                                            control={<Radio />}
+                                                            label={paymentMode.payment_name}
+                                                            onClick={() => this.payClickHandler(paymentMode.id)}
+                                                        />
+                                                    ))}
+                                                    </RadioGroup>
+                                                </FormControl>
+                                            </div>
+                                            : ''
+                                            }       
+                                    
                                     </StepContent>
                                 </Step>
                             ))}

@@ -77,6 +77,15 @@ const styles = theme => ({
     payGroup: {
         margin: theme.spacing(0),
     },
+
+    stepperButton: {
+        marginTop: theme.spacing(1),
+        marginRight: theme.spacing(1),
+    },
+
+    backnextMargin: {
+        marginBottom: theme.spacing(2),
+    },
 });
 
 // const MenuProps = {
@@ -426,7 +435,21 @@ class Checkout extends Component {
                                             </div>
                                             : ''
                                             }       
-                                    
+                                        <div className={classes.backnextMargin}>
+                                            <div>
+                                                <Button
+                                                    disabled={activeStep === 0}  
+                                                    className={classes.stepperButton}>
+                                                        Back
+                                                    </Button>
+                                                <Button
+                                                    variant='contained'
+                                                    color='primary'
+                                                    className={classes.stepperButton}>
+                                                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                                </Button>
+                                            </div>
+                                        </div>
                                     </StepContent>
                                 </Step>
                             ))}

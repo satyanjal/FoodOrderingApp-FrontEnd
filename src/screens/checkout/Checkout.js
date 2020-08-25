@@ -255,14 +255,37 @@ class Checkout extends Component {
             }
         }
 
-        // let that = this;
-        // let dataNewAddress = {
-        //     'city': this.state.city,
-        //     'flat_building_name': this.state.flatBuildingNo,
-        //     'locality': this.state.locality,
-        //     'pincode': this.state.pincode,
-        //     'state_uuid': stateUUID
-        // }
+        let that = this;
+        let dataNewAddress = {
+            'city': this.state.city,
+            'flat_building_name': this.state.flatBuildingNo,
+            'locality': this.state.locality,
+            'pincode': this.state.pincode,
+            'state_uuid': stateUUID
+        }
+
+        let xhrNewAddress = new XMLHttpRequest();
+        xhrNewAddress.addEventListener('readystatechange', function () {
+            if (this.readyState === 4) {
+                let dataCustomerAddress = null;
+                let xhrCustomerAddress = new XMLHttpRequest();
+                xhrCustomerAddress.addEventListener('readystatechange', function () {
+                    if (this.readyState === 4) {
+                        that.setState({
+                            customerExistingAddresses: JSON.parse(this.responseText).addresses,
+                        });
+                    }
+                });
+                xhrCustomerAddress.open('GET', `${that.props.baseUrl}address/customer`);
+                xhrCustomerAddress.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
+                xhrCustomerAddress.send(dataCustomerAddress);
+                window.alert('New address added!');
+            }
+        });
+        xhrNewAddress.open('POST', `${this.props.baseUrl}address`);
+        xhrNewAddress.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
+        xhrNewAddress.setRequestHeader('Content-Type', 'application/json');
+        xhrNewAddress.send(JSON.stringify(dataNewAddress));
 
     };
 

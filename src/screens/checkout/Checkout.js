@@ -146,6 +146,7 @@ class Checkout extends Component {
 
     componentDidMount(){
         this.getStates();
+        //this.getExistingAddress();
     };
 
     getStates = () => {
@@ -164,6 +165,23 @@ class Checkout extends Component {
             console.log('error user data',error);
         });
     };
+
+    // getExistingAddress = () => {
+    //     let that = this;
+    //     let url = `${constants.api}/address/customer`;
+    //     return fetch(url,{
+    //         method:'GET',
+    //     }).then((response) =>{
+    //         return response.json();
+    //     }).then((jsonResponse) =>{
+    //         that.setState({
+    //             states: jsonResponse.addresses
+    //         });
+    //         console.log(that.state.addresses);
+    //     }).catch((error) => {
+    //         console.log('error user data',error);
+    //     });
+    // };
 
     existingAddressOnClickHandler = (addressId) => {
         this.setState({
@@ -278,7 +296,7 @@ class Checkout extends Component {
                 xhrCustomerAddress.addEventListener('readystatechange', function () {
                     if (this.readyState === 4) {
                         that.setState({
-                            customerExistingAddresses: JSON.parse(this.responseText).addresses,
+                            existingAddress: JSON.parse(this.responseText).addresses,
                         });
                     }
                 });
@@ -323,6 +341,7 @@ class Checkout extends Component {
         }));
     };
 
+
     render(){
         const { classes } = this.props;
         const steps = getSteps();
@@ -337,7 +356,7 @@ class Checkout extends Component {
             <div>
             {/* <Header/> */}
             <Grid container= {true}>
-                <Grid item>
+                <Grid item={true} xs={9}>
                     <div>
                         <Stepper activeStep={activeStep} orientation='vertical'>
                             {steps.map((label, index) => (

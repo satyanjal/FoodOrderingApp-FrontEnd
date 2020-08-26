@@ -25,7 +25,8 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
-import {constants} from '../../common/util'
+import {constants} from '../../common/util';
+import Paper from '@material-ui/core/Paper';
 //import MenuProps from '@material-ui/core/'
 // import Header
 
@@ -145,8 +146,21 @@ class Checkout extends Component {
     };
 
     componentDidMount(){
+
+        // let that = this;
+
+        // // Customers' existing address
+        // let dataCustomerAddress = null;
+        // let xhrCustomerAddress = new XMLHttpRequest();
+        // xhrCustomerAddress.addEventListener('readystatechange', function () {
+        //     if (this.readyState === 4) {
+        //         that.setState({
+        //             existingAddress: JSON.parse(this.responseText).addresses,
+        //         });
+        //     }
+        // });
+        this.getExistingAddress();
         this.getStates();
-        //this.getExistingAddress();
     };
 
     getStates = () => {
@@ -166,22 +180,27 @@ class Checkout extends Component {
         });
     };
 
-    // getExistingAddress = () => {
-    //     let that = this;
-    //     let url = `${constants.api}/address/customer`;
-    //     return fetch(url,{
-    //         method:'GET',
-    //     }).then((response) =>{
-    //         return response.json();
-    //     }).then((jsonResponse) =>{
-    //         that.setState({
-    //             states: jsonResponse.addresses
-    //         });
-    //         console.log(that.state.addresses);
-    //     }).catch((error) => {
-    //         console.log('error user data',error);
-    //     });
-    // };
+    getExistingAddress = () => {
+        let that = this;
+        let url = `${constants.api}/address/customer`;
+        return fetch(url,{
+            method:'GET',
+            headers: {
+                // 'Content-Type': 'application/json',
+                "Accept": "application/json;charset=UTF-8",
+                "authorization": "Bearer eyJraWQiOiIwMWYxMzNkNy0xNGM4LTQ1OTktYWY1ZS0zZjRiY2VkYzdhYWEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiIxOWRhMjJmMy0yYWI5LTQ3ZWQtYTkwZS02OTRmODY2YmE2YjIiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODQ3MiwiaWF0IjoxNTk4NDQ0fQ.5LmOs4nGHAmuXbFCmifXzPpFf8KUV5TewoQ2OpwWGRbeGrE-BoYwMFgWP5gEGoJkxc9aI16jHBb5MYK0Eq_aYQ"
+            }
+        }).then((response) =>{
+            return response.json();
+        }).then((jsonResponse) =>{
+            that.setState({
+                existingAddress: jsonResponse.addresses
+            });
+            // console.log(that.state.addresses);
+        }).catch((error) => {
+            console.log('error user data',error);
+        });
+    };
 
     existingAddressOnClickHandler = (addressId) => {
         this.setState({
@@ -288,33 +307,31 @@ class Checkout extends Component {
             'state_uuid': stateUUID
         }
 
-        let xhrNewAddress = new XMLHttpRequest();
-        xhrNewAddress.addEventListener('readystatechange', function () {
-            if (this.readyState === 4) {
-                let dataCustomerAddress = null;
-                let xhrCustomerAddress = new XMLHttpRequest();
-                xhrCustomerAddress.addEventListener('readystatechange', function () {
-                    if (this.readyState === 4) {
-                        that.setState({
-                            existingAddress: JSON.parse(this.responseText).addresses,
-                        });
-                    }
-                });
-                xhrCustomerAddress.open('GET', `${that.props.baseUrl}address/customer`);
-                xhrCustomerAddress.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
-                xhrCustomerAddress.send(dataCustomerAddress);
-                window.alert('New address added!');
-            }
-        });
-        xhrNewAddress.open('POST', `${this.props.baseUrl}address`);
-        xhrNewAddress.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
-        xhrNewAddress.setRequestHeader('Content-Type', 'application/json');
-        xhrNewAddress.send(JSON.stringify(dataNewAddress));
-
+        // let xhrNewAddress = new XMLHttpRequest();
+        // xhrNewAddress.addEventListener('readystatechange', function () {
+        //     if (this.readyState === 4) {
+        //         let dataCustomerAddress = null;
+        //         let xhrCustomerAddress = new XMLHttpRequest();
+        //         xhrCustomerAddress.addEventListener('readystatechange', function() {
+        //             if (this.readyState === 4) {
+        //                 that.setState({
+        //                     existingAddress: JSON.parse(this.responseText).address,
+        //                 });
+        //             }
+        //         });
+        //         xhrCustomerAddress.open('GET', `${that.props.baseUrl}address/customer`);
+        //         xhrCustomerAddress.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
+        //         xhrCustomerAddress.send(dataCustomerAddress);
+        //     }
+        // });
+        // xhrNewAddress.open('POST', `${this.props.baseUrl}address`);
+        // xhrNewAddress.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
+        // xhrNewAddress.setRequestHeader('Content-Type', 'application/json');
+        // xhrNewAddress.send(JSON.stringify(dataNewAddress));
     };
 
     payChangeHandler = event => {
-        this.setState({ radioValue: event.target.value });
+        this.setState({ payValue: event.target.value });
     };
 
     payClickHandler = (paymentId) => {
@@ -536,7 +553,8 @@ class Checkout extends Component {
                                                 <Button
                                                     variant='contained'
                                                     color='primary'
-                                                    className={classes.stepperButton}>
+                                                    className={classes.stepperButton}
+                                                    onClick={this.stepperNextHandler}>
                                                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                                                 </Button>
                                             </div>
@@ -545,6 +563,16 @@ class Checkout extends Component {
                                 </Step>
                             ))}
                         </Stepper>
+                        {activeStep === steps.length && (
+                            <Paper square elevation={0} className={classes.resetContainer}>
+                                <Typography variant='h6'>
+                                    View the summary &#38; place your order now!
+                                </Typography>
+                                <Button onClick={this.stepperResetHandler} className={classes.stepperButton}>
+                                    CHANGE
+                                </Button>
+                            </Paper>
+                        )}
                     </div>
                 </Grid>
             </Grid>

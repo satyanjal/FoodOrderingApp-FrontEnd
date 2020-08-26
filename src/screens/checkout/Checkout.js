@@ -27,6 +27,8 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
 import {constants} from '../../common/util';
 import Paper from '@material-ui/core/Paper';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 //import MenuProps from '@material-ui/core/'
 // import Header
 
@@ -593,6 +595,14 @@ class Checkout extends Component {
                         )}
                     </div>
                 </Grid>
+
+                <Card id='summary-card'>
+                    <CardContent>
+                        <Typography variant='h5'>
+                            Summary
+                        </Typography>
+                    </CardContent>
+                </Card>
             </Grid>
             </div>
         );

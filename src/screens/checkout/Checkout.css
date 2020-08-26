@@ -10,3 +10,10 @@
     border-style: none;
     box-shadow: none;
 }
+
+#summary-card {
+    margin-top: 25px;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    margin-left: 25px;
+}

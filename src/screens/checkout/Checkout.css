@@ -1,0 +1,12 @@
+#select-address {
+    border-style: solid;
+    border-color: #E0265F;
+    border-radius: 8px;
+    border-width: 1.5px;
+    box-shadow: 2px 2px #E0265F;
+}
+
+#unselect-address {
+    border-style: none;
+    box-shadow: none;
+}

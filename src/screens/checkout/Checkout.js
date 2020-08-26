@@ -298,14 +298,14 @@ class Checkout extends Component {
             }
         }
 
-        let that = this;
-        let dataNewAddress = {
-            'city': this.state.city,
-            'flat_building_name': this.state.flatBuildingNo,
-            'locality': this.state.locality,
-            'pincode': this.state.pincode,
-            'state_uuid': stateUUID
-        }
+        // let that = this;
+        // let dataNewAddress = {
+        //     'city': this.state.city,
+        //     'flat_building_name': this.state.flatBuildingNo,
+        //     'locality': this.state.locality,
+        //     'pincode': this.state.pincode,
+        //     'state_uuid': stateUUID
+        // }
 
         // let xhrNewAddress = new XMLHttpRequest();
         // xhrNewAddress.addEventListener('readystatechange', function () {
@@ -422,7 +422,7 @@ class Checkout extends Component {
                                                                     </Typography>
                                                                     <CheckCircleIcon
                                                                         className={classes.check}
-                                                                        nativeColor={this.state[address.id] === 'select-address' ? 'green' : 'grey'}
+                                                                        nativecolor={this.state[address.id] === 'select-address' ? 'green' : 'grey'}
                                                                     />
                                                                 </GridListTile>
                                                             ))}

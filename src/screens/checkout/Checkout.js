@@ -161,6 +161,7 @@ class Checkout extends Component {
         // });
         this.getExistingAddress();
         this.getStates();
+        this.getPaymentMethods();
     };
 
     getStates = () => {
@@ -195,6 +196,23 @@ class Checkout extends Component {
         }).then((jsonResponse) =>{
             that.setState({
                 existingAddress: jsonResponse.addresses
+            });
+            // console.log(that.state.addresses);
+        }).catch((error) => {
+            console.log('error user data',error);
+        });
+    };
+
+    getPaymentMethods = () => {
+        let that = this;
+        let url = `${constants.api}/payment`;
+        return fetch(url,{
+            method:'GET',
+        }).then((response) =>{
+            return response.json();
+        }).then((jsonResponse) =>{
+            that.setState({
+                paymentModes: jsonResponse.paymentMethods
             });
             // console.log(that.state.addresses);
         }).catch((error) => {

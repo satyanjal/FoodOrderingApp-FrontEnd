@@ -660,7 +660,13 @@ class Checkout extends Component {
                             <Divider className={classes.cardDivider} />
 
                             <div className={classes.netAmount}>
-                                    Net Amount                               
+                                Net Amount
+                                <span className='right'>
+                                    <span className='width-5 checkout-grey-color'>
+                                        <i className='fa fa-inr'></i>
+                                    </span> 
+                                    {/* {this.state.customerCart.totalPrice}.00 */}
+                                </span>                               
                             </div>
                         </CardContent>
                     </Card>

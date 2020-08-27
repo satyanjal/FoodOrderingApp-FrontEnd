@@ -99,6 +99,10 @@ const styles = theme => ({
     netAmount: {
         marginTop: '15px',
     },
+
+    placeOrderButton: {
+        marginTop: '20px',
+    },
 });
 
 // const MenuProps = {
@@ -668,6 +672,14 @@ class Checkout extends Component {
                                     {/* {this.state.customerCart.totalPrice}.00 */}
                                 </span>                               
                             </div>
+
+                            <Button
+                                variant='contained'
+                                color='primary'
+                                className={classes.placeOrderButton}
+                                fullWidth={true}>
+                                Place Order
+                            </Button>
                         </CardContent>
                     </Card>
                 </Grid>

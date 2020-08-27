@@ -29,6 +29,7 @@ import {constants} from '../../common/util';
 import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import Divider from '@material-ui/core/Divider';
 //import MenuProps from '@material-ui/core/'
 // import Header
 
@@ -90,6 +91,14 @@ const styles = theme => ({
     backnextMargin: {
         marginBottom: theme.spacing(2),
     },
+
+    cardDivider: {
+        marginTop: '5px',
+    },
+
+    netAmount: {
+        marginTop: '15px',
+    },
 });
 
 // const MenuProps = {
@@ -140,6 +149,25 @@ class Checkout extends Component {
             payValue: '',
             selectedExistingAddress: null,
             selectedPaymentMode: null,
+            customerCart: {
+                "restaurantDetails": {
+                    "restaurant_name": "Gateway Taproom",
+                    "id": "246165d2-a238-11e8-9077-720006ceb890"
+                },
+                "cartItems": [{
+                    "id": "c860e78a-a29b-11e8-9a3a-720006ceb890",
+                    "name": "Pizza",
+                    "price": 10,
+                    "quatity": 1
+                },
+                {
+                    "id": "7c174b25-bb31-46a8-87b4-c06ffc9d5f8f",
+                    "name": "Chicken Burger",
+                    "price": 10,
+                    "quatity": 1
+                }],
+                "totalPrice": 30
+            } //JSON.parse(sessionStorage.getItem('customer-cart')),
         };
     }
 
@@ -147,23 +175,39 @@ class Checkout extends Component {
         activeStep: 0,
     };
 
-    componentDidMount(){
-
-        // let that = this;
-
-        // // Customers' existing address
-        // let dataCustomerAddress = null;
-        // let xhrCustomerAddress = new XMLHttpRequest();
-        // xhrCustomerAddress.addEventListener('readystatechange', function () {
-        //     if (this.readyState === 4) {
-        //         that.setState({
-        //             existingAddress: JSON.parse(this.responseText).addresses,
-        //         });
-        //     }
-        // });
+    componentDidMount(){        
         this.getExistingAddress();
         this.getStates();
         this.getPaymentMethods();
+        this.setCustomerCart(); // TODO: Delete after actual implementation
+    };
+    
+    // Temporary function
+    setCustomerCart = () =>{
+        sessionStorage.setItem(
+            "customer-cart", 
+            JSON.stringify({
+                "restaurantDetails": {
+                    "restaurant_name": "Gateway Taproom",
+                    "id": "246165d2-a238-11e8-9077-720006ceb890"
+                },
+                "cartItems": [{
+                    "id": "c860e78a-a29b-11e8-9a3a-720006ceb890",
+                    "name": "Pizza",
+                    "price": 10,
+                    "quantity": 1
+                },
+                {
+                    "id": "7c174b25-bb31-46a8-87b4-c06ffc9d5f8f",
+                    "name": "Chicken Burger",
+                    "price": 10,
+                    "quantity": 1
+                }],
+                "totalPrice": 30
+            })
+        )
+        this.setState({customerCart: JSON.parse(sessionStorage.getItem('customer-cart'))});
+        console.log(this.state.customerCart);
     };
 
     getStates = () => {
@@ -191,7 +235,7 @@ class Checkout extends Component {
             headers: {
                 // 'Content-Type': 'application/json',
                 "Accept": "application/json;charset=UTF-8",
-                "authorization": "Bearer eyJraWQiOiIwMWYxMzNkNy0xNGM4LTQ1OTktYWY1ZS0zZjRiY2VkYzdhYWEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiIxOWRhMjJmMy0yYWI5LTQ3ZWQtYTkwZS02OTRmODY2YmE2YjIiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODQ3MiwiaWF0IjoxNTk4NDQ0fQ.5LmOs4nGHAmuXbFCmifXzPpFf8KUV5TewoQ2OpwWGRbeGrE-BoYwMFgWP5gEGoJkxc9aI16jHBb5MYK0Eq_aYQ"
+                "authorization": "Bearer eyJraWQiOiI1OWU0ZjQwMi0yMTA4LTQzYjItYjQ5Ni1kYzZmMWUwYzRlNjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiI0YmI5NWNhMi1lMGI2LTRhNTgtODU2YS0xNTFmNjg0MjAzZjkiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODQ5MSwiaWF0IjoxNTk4NDYyfQ.jbBD_IxXt1iH82_eCSDbDta_pkM0yn32b5n24oj6mbPz4zQtkukvRfh-ysuuZiyLLfpqAw3euqV8XflQdo8lkg"
             }
         }).then((response) =>{
             return response.json();
@@ -220,6 +264,10 @@ class Checkout extends Component {
         }).catch((error) => {
             console.log('error user data',error);
         });
+    };
+
+    componentWillUnmount = () => {
+        sessionStorage.removeItem('customer-cart');
     };
 
     existingAddressOnClickHandler = (addressId) => {
@@ -385,7 +433,8 @@ class Checkout extends Component {
         const { activeStep } = this.state;
         const { tabValue } = this.state;
         let statesList =  this.state.states.map(state => (
-            <MenuItem key={'state' + state.id} value={state.state_name}>                                                                            {state.state_name}
+            <MenuItem key={'state' + state.id} value={state.state_name}>                     
+            {state.state_name}
             </MenuItem>
             ));
         
@@ -596,13 +645,26 @@ class Checkout extends Component {
                     </div>
                 </Grid>
 
-                <Card id='summary-card'>
-                    <CardContent>
-                        <Typography variant='h5'>
-                            Summary
-                        </Typography>
-                    </CardContent>
-                </Card>
+                <Grid item={true} xs>
+                    <Card id='summary-card'>
+                        <CardContent>
+                            <Typography variant='h5'>
+                                Summary
+                            </Typography>
+                            <br/>
+
+                            <Typography variant='h6' color='textSecondary' gutterBottom>
+                                {this.state.customerCart.restaurantDetails.restaurant_name}
+                            </Typography>
+
+                            <Divider className={classes.cardDivider} />
+
+                            <div className={classes.netAmount}>
+                                    Net Amount                               
+                            </div>
+                        </CardContent>
+                    </Card>
+                </Grid>
             </Grid>
             </div>
         );

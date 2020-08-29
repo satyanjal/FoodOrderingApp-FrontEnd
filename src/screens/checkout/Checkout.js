@@ -137,17 +137,21 @@ class Checkout extends Component {
             activeStep:0,
             tabValue:0,
             existingAddress:[],
-            flatBuildingNo: '',
-            flatBuildingNoRequired: 'display-none',
-            localityRequired: 'display-none',
+            flatNo: '',
+            flatNoRequired: 'display-none',
+            flatNoMsg: "required",
             locality: '',
-            cityRequired: 'display-none',
+            localityRequired: 'display-none',
+            localityMsg: "required",
             city: '',
-            stateRequired: 'display-none',
-            newAddressState: '',
+            cityRequired: 'display-none',
+            cityMsg: "required",
+            addstate: '',
+            addstateRequired: 'display-none',
+            addstateMsg: "required",
+            pincode: '',
             pincodeRequired: 'display-none',
             pincodeRequiredMsg: 'required',
-            pincode: '',
             states: [],
             paymentModes: [],
             payValue: '',
@@ -161,14 +165,16 @@ class Checkout extends Component {
                 "cartItems": [{
                     "id": "c860e78a-a29b-11e8-9a3a-720006ceb890",
                     "name": "Pizza",
-                    "price": 10,
-                    "quatity": 1
+                    "totalPrice": 10,
+                    "quantity": 1,
+                    "type": "V"
                 },
                 {
                     "id": "7c174b25-bb31-46a8-87b4-c06ffc9d5f8f",
                     "name": "Chicken Burger",
-                    "price": 10,
-                    "quatity": 1
+                    "totalPrice": 20,
+                    "quantity": 1,
+                    "type": "N"
                 }],
                 "totalPrice": 30
             } //JSON.parse(sessionStorage.getItem('customer-cart')),
@@ -183,36 +189,11 @@ class Checkout extends Component {
         this.getExistingAddress();
         this.getStates();
         this.getPaymentMethods();
-        this.setCustomerCart(); // TODO: Delete after actual implementation
+        console.log(this.state.customerCart);
+        sessionStorage.setItem("authorization", 
+        "Bearer eyJraWQiOiJiMWViNzlmMy1mNTAwLTQ2MmEtYTlhOC01ZmI5MWRjYzAxMTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiIxZjRjMzhkOS01NmM1LTQ5YjItODZmMC0yN2EzYjdjNTM4MDMiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODcyNCwiaWF0IjoxNTk4Njk2fQ.Oit0fZjcH1w1R9snJ485Lfzkk5-H80XOxh83-0SvyXwyqDTiCIns3v909A5qYVjLyw_iiWIIzCSlmOcQcc_xrw");
     };
     
-    // Temporary function
-    setCustomerCart = () =>{
-        sessionStorage.setItem(
-            "customer-cart", 
-            JSON.stringify({
-                "restaurantDetails": {
-                    "restaurant_name": "Gateway Taproom",
-                    "id": "246165d2-a238-11e8-9077-720006ceb890"
-                },
-                "cartItems": [{
-                    "id": "c860e78a-a29b-11e8-9a3a-720006ceb890",
-                    "name": "Pizza",
-                    "price": 10,
-                    "quantity": 1
-                },
-                {
-                    "id": "7c174b25-bb31-46a8-87b4-c06ffc9d5f8f",
-                    "name": "Chicken Burger",
-                    "price": 10,
-                    "quantity": 1
-                }],
-                "totalPrice": 30
-            })
-        )
-        this.setState({customerCart: JSON.parse(sessionStorage.getItem('customer-cart'))});
-        console.log(this.state.customerCart);
-    };
 
     getStates = () => {
         let that = this;
@@ -239,7 +220,7 @@ class Checkout extends Component {
             headers: {
                 // 'Content-Type': 'application/json',
                 "Accept": "application/json;charset=UTF-8",
-                "authorization": "Bearer eyJraWQiOiI1OWU0ZjQwMi0yMTA4LTQzYjItYjQ5Ni1kYzZmMWUwYzRlNjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiI0YmI5NWNhMi1lMGI2LTRhNTgtODU2YS0xNTFmNjg0MjAzZjkiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODQ5MSwiaWF0IjoxNTk4NDYyfQ.jbBD_IxXt1iH82_eCSDbDta_pkM0yn32b5n24oj6mbPz4zQtkukvRfh-ysuuZiyLLfpqAw3euqV8XflQdo8lkg"
+                "authorization": "Bearer eyJraWQiOiJiMWViNzlmMy1mNTAwLTQ2MmEtYTlhOC01ZmI5MWRjYzAxMTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiIxZjRjMzhkOS01NmM1LTQ5YjItODZmMC0yN2EzYjdjNTM4MDMiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODcyNCwiaWF0IjoxNTk4Njk2fQ.Oit0fZjcH1w1R9snJ485Lfzkk5-H80XOxh83-0SvyXwyqDTiCIns3v909A5qYVjLyw_iiWIIzCSlmOcQcc_xrw"
             }
         }).then((response) =>{
             return response.json();
@@ -286,33 +267,55 @@ class Checkout extends Component {
         this.setState({ tabValue: value });
     };
 
-    flatBuildingNoHandler = event => {
-        this.setState({ flatBuildingNo: event.target.value });
+    flatNoHandler = event => {
+        this.setState({
+            flatNo: event.target.value,
+            flatNoMsg: (event.target.value === "" ? "required" : "")
+        })
     };
 
     localityHandler = event => {
-        this.setState({ locality: event.target.value });
+        this.setState({
+            locality: event.target.value,
+            localityMsg: (event.target.value === "" ? "required" : "")
+        })
     };
 
     cityHandler = event => {
-        this.setState({ city: event.target.value });
+        this.setState({
+            city: event.target.value,
+            cityMsg: (event.target.value === "" ? "required" : "")
+        })
     };
 
     stateHandler = event => {
-        this.setState({ newAddressState: event.target.value });
+        this.setState({
+            addstate: event.target.value,
+            addstateMsg: (event.target.value === "" ? "required" : "")
+        })
     };
 
     pincodeHandler = event => {
-        this.setState({ pincode: event.target.value });
+        let validatePincode = new RegExp('^[1-9][0-9]{5}$');
+        let message = "";
+        if(validatePincode.test(event.target.value) === false){
+            message = "Pincode must contain only numbers and must be 6 digits long"
+        } else if(event.target.value === "" ) {
+            message = "required"
+        }
+        this.setState({
+            pincode: event.target.value,
+            pincodeRequiredMsg: message
+        })
     };
 
     saveAddressClickHandler = () => {
-        let flatBuildingNoReq = false;
-        if (this.state.flatBuildingNo === '') {
-            this.setState({ flatBuildingNoRequired: 'display-block' });
-            flatBuildingNoReq = true;
+        let flatNoReq = false;
+        if (this.state.flatNo === '') {
+            this.setState({ flatNoRequired: 'display-block' });
+            flatNoReq = true;
         } else {
-            this.setState({ flatBuildingNoRequired: 'display-none' });
+            this.setState({ flatNoRequired: 'display-none' });
         }
 
         let localityReq = false;
@@ -332,11 +335,11 @@ class Checkout extends Component {
         }
 
         let stateReq = false;
-        if (this.state.newAddressState === '') {
-            this.setState({ stateRequired: 'display-block' });
+        if (this.state.addstate === '') {
+            this.setState({ addstateRequired: 'display-block' });
             stateReq = true;
         } else {
-            this.setState({ stateRequired: 'display-none' });
+            this.setState({ addstateRequired: 'display-none' });
         }
 
         let pincodeReq = false;
@@ -359,47 +362,49 @@ class Checkout extends Component {
             return;
         }
 
-        if (flatBuildingNoReq || localityReq || cityReq || stateReq || pincodeReq) {
+        if (flatNoReq || localityReq || cityReq || stateReq || pincodeReq) {
             return;
         }
 
         let stateUUID = '';
         for (let state of this.state.states) {
-            if (state.state_name === this.state.newAddressState) {
+            if (state.state_name === this.state.addstate) {
                 stateUUID = state.id;
             }
         }
 
-        // let that = this;
-        // let dataNewAddress = {
-        //     'city': this.state.city,
-        //     'flat_building_name': this.state.flatBuildingNo,
-        //     'locality': this.state.locality,
-        //     'pincode': this.state.pincode,
-        //     'state_uuid': stateUUID
-        // }
+        let that = this;
+        let dataNewAddress = {
+            'city': this.state.city,
+            'flat_building_name': this.state.flatNo,
+            'locality': this.state.locality,
+            'pincode': this.state.pincode,
+            'state_uuid': stateUUID
+        }
 
-        // let xhrNewAddress = new XMLHttpRequest();
-        // xhrNewAddress.addEventListener('readystatechange', function () {
-        //     if (this.readyState === 4) {
-        //         let dataCustomerAddress = null;
-        //         let xhrCustomerAddress = new XMLHttpRequest();
-        //         xhrCustomerAddress.addEventListener('readystatechange', function() {
-        //             if (this.readyState === 4) {
-        //                 that.setState({
-        //                     existingAddress: JSON.parse(this.responseText).address,
-        //                 });
-        //             }
-        //         });
-        //         xhrCustomerAddress.open('GET', `${that.props.baseUrl}address/customer`);
-        //         xhrCustomerAddress.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
-        //         xhrCustomerAddress.send(dataCustomerAddress);
-        //     }
-        // });
-        // xhrNewAddress.open('POST', `${this.props.baseUrl}address`);
-        // xhrNewAddress.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
-        // xhrNewAddress.setRequestHeader('Content-Type', 'application/json');
-        // xhrNewAddress.send(JSON.stringify(dataNewAddress));
+        let xhrNewAddress = new XMLHttpRequest();
+        xhrNewAddress.addEventListener('readystatechange', function () {
+            if (this.readyState === 4) {
+                let dataCustomerAddress = null;
+                let xhrCustomerAddress = new XMLHttpRequest();
+                xhrCustomerAddress.addEventListener('readystatechange', function() {
+                    if (this.readyState === 4) {
+                        console.log("this.response");
+                        console.log(this.response);
+                        that.setState({
+                            existingAddress: JSON.parse(this.response).address,
+                        });
+                    }
+                });
+                xhrCustomerAddress.open('GET', `${that.props.baseUrl}address/customer`);
+                xhrCustomerAddress.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
+                xhrCustomerAddress.send(dataCustomerAddress);
+            }
+        });
+        xhrNewAddress.open('POST', `${this.props.baseUrl}address`);
+        xhrNewAddress.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
+        xhrNewAddress.setRequestHeader('Content-Type', 'application/json');
+        xhrNewAddress.send(JSON.stringify(dataNewAddress));
     };
 
     payChangeHandler = event => {
@@ -506,15 +511,15 @@ class Checkout extends Component {
                                             {tabValue === 1 &&
                                                 <TabContainer>
                                                     <FormControl required>
-                                                        <InputLabel htmlFor='flatBuildingNo'>Flat / Building No.</InputLabel>
+                                                        <InputLabel htmlFor='flatNo'>Flat / Building No.</InputLabel>
                                                             <Input
-                                                                id='flatBuildingNo'
+                                                                id='flatNo'
                                                                 type='text'
-                                                                flatno={this.state.flatBuildingNo}
-                                                                value={this.state.flatBuildingNo}
-                                                                onChange={this.flatBuildingNoHandler}/>
-                                                        <FormHelperText className={this.state.flatBuildingNoRequired} error={true}>
-                                                            <span>required</span>
+                                                                flatno={this.state.flatNo}
+                                                                value={this.state.flatNo}
+                                                                onChange={this.flatNoHandler}/>
+                                                        <FormHelperText className={this.state.flatNoRequired} error={true}>
+                                                            <span>{this.state.flatNoMsg}</span>
                                                         </FormHelperText>
                                                     </FormControl>
                                                     <br /><br />
@@ -528,9 +533,9 @@ class Checkout extends Component {
                                                                 value={this.state.locality}
                                                                 onChange={this.localityHandler}/>
                                                         <FormHelperText className={this.state.localityRequired} error={true}>
-                                                            <span>required</span>
+                                                            <span>{this.state.localityMsg}</span>
                                                         </FormHelperText>
-                                                    </FormControl>                                                            <br /><br />
+                                                    </FormControl>
                                                     <br /><br />
 
                                                     <FormControl required>
@@ -542,24 +547,24 @@ class Checkout extends Component {
                                                                 value={this.state.city}
                                                                 onChange={this.cityHandler}/>
                                                         <FormHelperText className={this.state.cityRequired} error={true}>
-                                                            <span>required</span>
+                                                            <span>{this.state.cityMsg}</span>
                                                         </FormHelperText>  
                                                     </FormControl>                               
                                                     <br /><br />
 
                                                     <FormControl required>
-                                                        <InputLabel htmlFor='newAddressstate'>State</InputLabel>
+                                                        <InputLabel htmlFor='addstate'>State</InputLabel>
                                                             <Select
-                                                                id='newAddressstate'
-                                                                newaddressstate={this.state.newAddressState}
-                                                                value={this.state.newAddressState}
+                                                                id='addstate'
+                                                                addstate={this.state.addstate}
+                                                                value={this.state.addstate}
                                                                 onChange={this.stateHandler}
                                                                 className={classes.selectNewAddressState}>
                                                                 {/* MenuProps={MenuProps} */}
                                                                 {statesList}
                                                             </Select>
-                                                        <FormHelperText className={this.state.stateRequired} error={true}>
-                                                            <span>required</span>
+                                                        <FormHelperText className={this.state.addstateRequired} error={true}>
+                                                            <span>{this.state.addstateMsg}</span>
                                                         </FormHelperText>
                                                     </FormControl>
                                                     <br /><br />
@@ -657,19 +662,28 @@ class Checkout extends Component {
                             </Typography>
                             <br/>
 
-                            <Typography variant='h6' color='textSecondary' gutterBottom>
+                            {this.state.customerCart.cartItems.map(item => (
+                                <div key={'item' + item.id + item.category_name} className='flex width-100 pd-1-per'>
+                                    <span className='width-10'><i className={item.type === "N" ? 'fa fa-stop-circle-o non-veg' : 'fa fa-stop-circle-o veg'}></i></span>
+                                    <span className='width-50 capital checkout-grey-color'>{item.name}</span>
+                                    <span className='width-25 checkout-grey-color'>{item.quantity}</span>
+                                    <span className='width-4 checkout-grey-color'><i className='fa fa-inr'></i></span>
+                                    <span className='checkout-grey-color'>{item.totalPrice}.00</span>
+                                </div>
+                            ))}
+
+                            {/* <Typography variant='h6' color='textSecondary' gutterBottom>
                                 {this.state.customerCart.restaurantDetails.restaurant_name}
-                            </Typography>
+                            </Typography> */}
 
                             <Divider className={classes.cardDivider} />
 
                             <div className={classes.netAmount}>
                                 Net Amount
                                 <span className='right'>
-                                    <span className='width-5 checkout-grey-color'>
+                                    <span className='width-15 checkout-grey-color'>
                                         <i className='fa fa-inr'></i>
-                                    </span> 
-                                    {/* {this.state.customerCart.totalPrice}.00 */}
+                                    </span>{this.state.customerCart.totalPrice}.00
                                 </span>                               
                             </div>
 

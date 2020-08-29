@@ -192,6 +192,8 @@ class Checkout extends Component {
         console.log(this.state.customerCart);
         sessionStorage.setItem("authorization", 
         "Bearer eyJraWQiOiJiMWViNzlmMy1mNTAwLTQ2MmEtYTlhOC01ZmI5MWRjYzAxMTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiIxZjRjMzhkOS01NmM1LTQ5YjItODZmMC0yN2EzYjdjNTM4MDMiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODcyNCwiaWF0IjoxNTk4Njk2fQ.Oit0fZjcH1w1R9snJ485Lfzkk5-H80XOxh83-0SvyXwyqDTiCIns3v909A5qYVjLyw_iiWIIzCSlmOcQcc_xrw");
+        sessionStorage.setItem("access-token", 
+        "eyJraWQiOiJiMWViNzlmMy1mNTAwLTQ2MmEtYTlhOC01ZmI5MWRjYzAxMTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiIxZjRjMzhkOS01NmM1LTQ5YjItODZmMC0yN2EzYjdjNTM4MDMiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODcyNCwiaWF0IjoxNTk4Njk2fQ.Oit0fZjcH1w1R9snJ485Lfzkk5-H80XOxh83-0SvyXwyqDTiCIns3v909A5qYVjLyw_iiWIIzCSlmOcQcc_xrw");
     };
     
 
@@ -233,6 +235,22 @@ class Checkout extends Component {
             console.log('error user data',error);
         });
     };
+
+    // addNewAddress = (newAddress) => {
+    //     let that = this;
+    //     let url = `${constants.api}/address`;
+    //     return fetch(url, {
+    //         method:'POST',
+    //         mode: 'cors',
+    //         credentials: 'same-origin',
+    //         headers: {
+    //             // 'Content-Type': 'application/json',
+    //             "Accept": "application/json;charset=UTF-8",
+    //             "authorization": "Bearer eyJraWQiOiJiMWViNzlmMy1mNTAwLTQ2MmEtYTlhOC01ZmI5MWRjYzAxMTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiIxZjRjMzhkOS01NmM1LTQ5YjItODZmMC0yN2EzYjdjNTM4MDMiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODcyNCwiaWF0IjoxNTk4Njk2fQ.Oit0fZjcH1w1R9snJ485Lfzkk5-H80XOxh83-0SvyXwyqDTiCIns3v909A5qYVjLyw_iiWIIzCSlmOcQcc_xrw"
+    //         },
+    //         body: JSON.stringify(newAddress)
+    //     });
+    // };
 
     getPaymentMethods = () => {
         let that = this;
@@ -310,57 +328,11 @@ class Checkout extends Component {
     };
 
     saveAddressClickHandler = () => {
-        let flatNoReq = false;
-        if (this.state.flatNo === '') {
-            this.setState({ flatNoRequired: 'display-block' });
-            flatNoReq = true;
-        } else {
-            this.setState({ flatNoRequired: 'display-none' });
-        }
-
-        let localityReq = false;
-        if (this.state.locality === '') {
-            this.setState({ localityRequired: 'display-block' });
-            localityReq = true;
-        } else {
-            this.setState({ localityRequired: 'display-none' });
-        }
-
-        let cityReq = false;
-        if (this.state.city === '') {
-            this.setState({ cityRequired: 'display-block' });
-            cityReq = true;
-        } else {
-            this.setState({ cityRequired: 'display-none' });
-        }
-
-        let stateReq = false;
-        if (this.state.addstate === '') {
-            this.setState({ addstateRequired: 'display-block' });
-            stateReq = true;
-        } else {
-            this.setState({ addstateRequired: 'display-none' });
-        }
-
-        let pincodeReq = false;
-        if (this.state.pincode === '') {
-            this.setState({
-                pincodeRequired: 'display-block',
-                pincodeRequiredMsg: 'required'
-            });
-            pincodeReq = true;
-        } else {
-            this.setState({ pincodeRequired: 'display-none' });
-        }
-
-        let validatePincode = new RegExp('^[1-9][0-9]{5}$');
-        if (pincodeReq === false && validatePincode.test(this.state.pincode) === false) {
-            this.setState({
-                pincodeRequired: 'display-block',
-                pincodeRequiredMsg: 'Pincode must contain only numbers and must be 6 digits long'
-            });
-            return;
-        }
+        let flatNoReq = (this.state.flatNo === '' ? true : false);
+        let localityReq = (this.state.locality === '' ? true : false);
+        let cityReq = (this.state.city === '' ? true : false);
+        let stateReq = (this.state.addstate === '' ? true : false);
+        let pincodeReq = (this.state.pincode === '' ? true : false);
 
         if (flatNoReq || localityReq || cityReq || stateReq || pincodeReq) {
             return;
@@ -373,38 +345,40 @@ class Checkout extends Component {
             }
         }
 
-        let that = this;
-        let dataNewAddress = {
-            'city': this.state.city,
-            'flat_building_name': this.state.flatNo,
-            'locality': this.state.locality,
-            'pincode': this.state.pincode,
-            'state_uuid': stateUUID
-        }
+        let newAddress = ('flatBuildingName=' + this.state.flatNo
+        + '&locality=' + this.state.locality 
+        + '&city=' + this.state.city 
+        + '&pincode=' + this.state.pincode
+        + '&stateUuid=' + stateUUID)
+        let url = `${constants.api}/address/?${newAddress}`;
 
-        let xhrNewAddress = new XMLHttpRequest();
-        xhrNewAddress.addEventListener('readystatechange', function () {
-            if (this.readyState === 4) {
-                let dataCustomerAddress = null;
-                let xhrCustomerAddress = new XMLHttpRequest();
-                xhrCustomerAddress.addEventListener('readystatechange', function() {
-                    if (this.readyState === 4) {
-                        console.log("this.response");
-                        console.log(this.response);
-                        that.setState({
-                            existingAddress: JSON.parse(this.response).address,
-                        });
-                    }
-                });
-                xhrCustomerAddress.open('GET', `${that.props.baseUrl}address/customer`);
-                xhrCustomerAddress.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
-                xhrCustomerAddress.send(dataCustomerAddress);
-            }
+        // let newAddress = {'flatBuildingName': this.state.flatNo,
+        // 'locality': this.state.locality,
+        // 'city': this.state.city,
+        // 'pincode': this.state.pincode,
+        // 'stateUuid': stateUUID};
+
+        return fetch(url, {
+            method:'POST',
+            mode: 'cors',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                "Accept": "application/json;charset=UTF-8",
+                "authorization": "Bearer eyJraWQiOiJiMWViNzlmMy1mNTAwLTQ2MmEtYTlhOC01ZmI5MWRjYzAxMTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiIxZjRjMzhkOS01NmM1LTQ5YjItODZmMC0yN2EzYjdjNTM4MDMiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODcyNCwiaWF0IjoxNTk4Njk2fQ.Oit0fZjcH1w1R9snJ485Lfzkk5-H80XOxh83-0SvyXwyqDTiCIns3v909A5qYVjLyw_iiWIIzCSlmOcQcc_xrw",
+                'Access-Control-Allow-Origin': "*"
+            },
+            body: JSON.stringify(newAddress)
         });
-        xhrNewAddress.open('POST', `${this.props.baseUrl}address`);
-        xhrNewAddress.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
-        xhrNewAddress.setRequestHeader('Content-Type', 'application/json');
-        xhrNewAddress.send(JSON.stringify(dataNewAddress));
+
+        // let xhrNewAddress = new XMLHttpRequest();
+        // xhrNewAddress.open('POST', `${constants.api}/address/?${newAddress}`, true);
+        // xhrNewAddress.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
+        // xhrNewAddress.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        // xhrNewAddress.setRequestHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+        // xhrNewAddress.setRequestHeader('Accept', 'application/json');
+        // xhrNewAddress.send(null);
+        // this.getExistingAddress();
     };
 
     payChangeHandler = event => {
@@ -518,7 +492,7 @@ class Checkout extends Component {
                                                                 flatno={this.state.flatNo}
                                                                 value={this.state.flatNo}
                                                                 onChange={this.flatNoHandler}/>
-                                                        <FormHelperText className={this.state.flatNoRequired} error={true}>
+                                                        <FormHelperText error={true}>
                                                             <span>{this.state.flatNoMsg}</span>
                                                         </FormHelperText>
                                                     </FormControl>
@@ -532,7 +506,7 @@ class Checkout extends Component {
                                                                 locality={this.state.locality}
                                                                 value={this.state.locality}
                                                                 onChange={this.localityHandler}/>
-                                                        <FormHelperText className={this.state.localityRequired} error={true}>
+                                                        <FormHelperText error={true}>
                                                             <span>{this.state.localityMsg}</span>
                                                         </FormHelperText>
                                                     </FormControl>
@@ -546,7 +520,7 @@ class Checkout extends Component {
                                                                 city={this.state.city}
                                                                 value={this.state.city}
                                                                 onChange={this.cityHandler}/>
-                                                        <FormHelperText className={this.state.cityRequired} error={true}>
+                                                        <FormHelperText error={true}>
                                                             <span>{this.state.cityMsg}</span>
                                                         </FormHelperText>  
                                                     </FormControl>                               
@@ -563,7 +537,7 @@ class Checkout extends Component {
                                                                 {/* MenuProps={MenuProps} */}
                                                                 {statesList}
                                                             </Select>
-                                                        <FormHelperText className={this.state.addstateRequired} error={true}>
+                                                        <FormHelperText error={true}>
                                                             <span>{this.state.addstateMsg}</span>
                                                         </FormHelperText>
                                                     </FormControl>
@@ -578,7 +552,7 @@ class Checkout extends Component {
                                                                 value={this.state.pincode}
                                                                 onChange={this.pincodeHandler}
                                                             />
-                                                        <FormHelperText className={this.state.pincodeRequired} error={true}>
+                                                        <FormHelperText error={true}>
                                                             <span>{this.state.pincodeRequiredMsg}</span>
                                                         </FormHelperText>
                                                     </FormControl>

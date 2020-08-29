@@ -236,22 +236,6 @@ class Checkout extends Component {
         });
     };
 
-    // addNewAddress = (newAddress) => {
-    //     let that = this;
-    //     let url = `${constants.api}/address`;
-    //     return fetch(url, {
-    //         method:'POST',
-    //         mode: 'cors',
-    //         credentials: 'same-origin',
-    //         headers: {
-    //             // 'Content-Type': 'application/json',
-    //             "Accept": "application/json;charset=UTF-8",
-    //             "authorization": "Bearer eyJraWQiOiJiMWViNzlmMy1mNTAwLTQ2MmEtYTlhOC01ZmI5MWRjYzAxMTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiIxZjRjMzhkOS01NmM1LTQ5YjItODZmMC0yN2EzYjdjNTM4MDMiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODcyNCwiaWF0IjoxNTk4Njk2fQ.Oit0fZjcH1w1R9snJ485Lfzkk5-H80XOxh83-0SvyXwyqDTiCIns3v909A5qYVjLyw_iiWIIzCSlmOcQcc_xrw"
-    //         },
-    //         body: JSON.stringify(newAddress)
-    //     });
-    // };
-
     getPaymentMethods = () => {
         let that = this;
         let url = `${constants.api}/payment`;
@@ -474,7 +458,7 @@ class Checkout extends Component {
                                                                     </Typography>
                                                                     <CheckCircleIcon
                                                                         className={classes.check}
-                                                                        nativecolor={this.state[address.id] === 'select-address' ? 'green' : 'grey'}
+                                                                        style={this.state.selectedExistingAddress === address.id ? {color:"green"} : {color:"#999999"}}
                                                                     />
                                                                 </GridListTile>
                                                             ))}

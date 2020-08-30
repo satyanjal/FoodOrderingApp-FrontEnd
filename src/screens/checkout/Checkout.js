@@ -31,6 +31,9 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
 import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import FiberManualRecord from '@material-ui/icons/FiberManualRecord';
 // import Header
 
 const styles = theme => ({
@@ -168,16 +171,16 @@ class Checkout extends Component {
                 "cartItems": [{
                     "id": "c860e78a-a29b-11e8-9a3a-720006ceb890",
                     "name": "Pizza",
-                    "totalPrice": 10,
+                    "price": 10,
                     "quantity": 1,
-                    "type": "V"
+                    "type": "VEG"
                 },
                 {
                     "id": "7c174b25-bb31-46a8-87b4-c06ffc9d5f8f",
                     "name": "Chicken Burger",
-                    "totalPrice": 20,
+                    "price": 20,
                     "quantity": 1,
-                    "type": "N"
+                    "type": "NONVEG"
                 }],
                 "totalPrice": 30
             } //JSON.parse(sessionStorage.getItem('customer-cart')),
@@ -193,10 +196,8 @@ class Checkout extends Component {
         this.getStates();
         this.getPaymentMethods();
         console.log(this.state.customerCart);
-        sessionStorage.setItem("authorization", 
-        "Bearer eyJraWQiOiJiMWViNzlmMy1mNTAwLTQ2MmEtYTlhOC01ZmI5MWRjYzAxMTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiIxZjRjMzhkOS01NmM1LTQ5YjItODZmMC0yN2EzYjdjNTM4MDMiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODcyNCwiaWF0IjoxNTk4Njk2fQ.Oit0fZjcH1w1R9snJ485Lfzkk5-H80XOxh83-0SvyXwyqDTiCIns3v909A5qYVjLyw_iiWIIzCSlmOcQcc_xrw");
         sessionStorage.setItem("access-token", 
-        "eyJraWQiOiJiMWViNzlmMy1mNTAwLTQ2MmEtYTlhOC01ZmI5MWRjYzAxMTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiIxZjRjMzhkOS01NmM1LTQ5YjItODZmMC0yN2EzYjdjNTM4MDMiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODcyNCwiaWF0IjoxNTk4Njk2fQ.Oit0fZjcH1w1R9snJ485Lfzkk5-H80XOxh83-0SvyXwyqDTiCIns3v909A5qYVjLyw_iiWIIzCSlmOcQcc_xrw");
+        "eyJraWQiOiJkMWE4MDJkOS0xMjJlLTQ2NjUtYWI3My1jYjMzMTRkMjkwMmIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiI0YmI5NWNhMi1lMGI2LTRhNTgtODU2YS0xNTFmNjg0MjAzZjkiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODgzMywiaWF0IjoxNTk4ODA0fQ.7mDK9W2CgqtHbyEptkvHZyYyzntYzZlYC7IhZ7nhFZ_nPbcgOSgNJkwXDZIdpkIJjfTu3pa02e6tYgU54yeNXA");
     };
     
 
@@ -220,12 +221,13 @@ class Checkout extends Component {
     getExistingAddress = () => {
         let that = this;
         let url = `${constants.api}/address/customer`;
+        console.log(sessionStorage.getItem("access-token"));
         return fetch(url,{
             method:'GET',
             headers: {
                 // 'Content-Type': 'application/json',
                 "Accept": "application/json;charset=UTF-8",
-                "authorization": "Bearer eyJraWQiOiJiMWViNzlmMy1mNTAwLTQ2MmEtYTlhOC01ZmI5MWRjYzAxMTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiIxZjRjMzhkOS01NmM1LTQ5YjItODZmMC0yN2EzYjdjNTM4MDMiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODcyNCwiaWF0IjoxNTk4Njk2fQ.Oit0fZjcH1w1R9snJ485Lfzkk5-H80XOxh83-0SvyXwyqDTiCIns3v909A5qYVjLyw_iiWIIzCSlmOcQcc_xrw"
+                "authorization": "Bearer " + sessionStorage.getItem("access-token")
             }
         }).then((response) =>{
             return response.json();
@@ -233,7 +235,7 @@ class Checkout extends Component {
             that.setState({
                 existingAddress: jsonResponse.addresses
             });
-            // console.log(that.state.addresses);
+            console.log(that.state.existingAddress);
         }).catch((error) => {
             console.log('error user data',error);
         });
@@ -250,7 +252,7 @@ class Checkout extends Component {
             that.setState({
                 paymentModes: jsonResponse.paymentMethods
             });
-            // console.log(that.state.addresses);
+            console.log(that.state.paymentModes);
         }).catch((error) => {
             console.log('error user data',error);
         });
@@ -339,12 +341,6 @@ class Checkout extends Component {
         + '&stateUuid=' + stateUUID)
         let url = `${constants.api}/address/?${newAddress}`;
 
-        // let newAddress = {'flatBuildingName': this.state.flatNo,
-        // 'locality': this.state.locality,
-        // 'city': this.state.city,
-        // 'pincode': this.state.pincode,
-        // 'stateUuid': stateUUID};
-
         return fetch(url, {
             method:'POST',
             mode: 'cors',
@@ -352,20 +348,11 @@ class Checkout extends Component {
             headers: {
                 'Content-Type': 'application/json',
                 "Accept": "application/json;charset=UTF-8",
-                "authorization": "Bearer eyJraWQiOiJiMWViNzlmMy1mNTAwLTQ2MmEtYTlhOC01ZmI5MWRjYzAxMTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiIxZjRjMzhkOS01NmM1LTQ5YjItODZmMC0yN2EzYjdjNTM4MDMiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTU5ODcyNCwiaWF0IjoxNTk4Njk2fQ.Oit0fZjcH1w1R9snJ485Lfzkk5-H80XOxh83-0SvyXwyqDTiCIns3v909A5qYVjLyw_iiWIIzCSlmOcQcc_xrw",
+                "authorization": "Bearer " + sessionStorage.getItem('access-token'),
                 'Access-Control-Allow-Origin': "*"
             },
-            body: JSON.stringify(newAddress)
+            body: ""
         });
-
-        // let xhrNewAddress = new XMLHttpRequest();
-        // xhrNewAddress.open('POST', `${constants.api}/address/?${newAddress}`, true);
-        // xhrNewAddress.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
-        // xhrNewAddress.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-        // xhrNewAddress.setRequestHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-        // xhrNewAddress.setRequestHeader('Accept', 'application/json');
-        // xhrNewAddress.send(null);
-        // this.getExistingAddress();
     };
 
     payChangeHandler = event => {
@@ -396,6 +383,52 @@ class Checkout extends Component {
         }));
     };
 
+    placeOrderOnClickHandler = () => {
+        // let that = this;
+        let itemQuantities = this.state.customerCart.cartItems.map(
+            function (i) {
+                return {
+                    'item_id': i.id,
+                    'price': i.totalPrice,
+                    'quantity': i.quantity
+                }
+            }
+        );
+        let dataPlaceOrder = {
+            'address_id': this.state.selectedExistingAddress,
+            'bill': 0,
+            'coupon_id': '',
+            'discount': 0,
+            'item_quantities': itemQuantities,
+            'payment_id': this.state.selectedPaymentMode,
+            'restaurant_id': this.state.customerCart.restaurantDetails.id
+        }
+        let xhrPlaceOrder = new XMLHttpRequest();
+        // xhrPlaceOrder.addEventListener('readystatechange', function () {
+        //     if (this.readyState === 4) {
+        //         console.log(this.response.status);
+        //         let responseText = JSON.parse(this.response);
+        //         if (responseText.status === 'ORDER SUCCESSFULLY PLACED') {
+        //             that.setState({
+        //                 openPlaceOrderMsg: true,
+        //                 orderId: responseText.id,
+        //                 placeOrderMsg: `Order placed successfully! Your order ID is ${responseText.id}.`
+        //             });
+        //         } else {
+        //             that.setState({
+        //                 openPlaceOrderMsg: true,
+        //                 orderId: '',
+        //                 placeOrderMsg: 'Unable to place your order! Please try again!'
+        //             });
+        //         }
+        //     }
+        // })
+        xhrPlaceOrder.open('POST', `${constants.api}/order`);
+        xhrPlaceOrder.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
+        xhrPlaceOrder.setRequestHeader('Content-Type', 'application/json');
+        xhrPlaceOrder.send(JSON.stringify(dataPlaceOrder));
+    };
+
     placeOrderMsgOnCloseHandler = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -412,7 +445,7 @@ class Checkout extends Component {
         const { tabValue } = this.state;
         let statesList =  this.state.states.map(state => (
             <MenuItem key={'state' + state.id} value={state.state_name}>                     
-            {state.state_name}
+                {state.state_name}
             </MenuItem>
             ));
         
@@ -631,36 +664,54 @@ class Checkout extends Component {
                             </Typography>
                             <br/>
 
-                            {this.state.customerCart.cartItems.map(item => (
-                                <div key={'item' + item.id + item.category_name} className='flex width-100 pd-1-per'>
-                                    <span className='width-10'><i className={item.type === "N" ? 'fa fa-stop-circle-o non-veg' : 'fa fa-stop-circle-o veg'}></i></span>
-                                    <span className='width-50 capital checkout-grey-color'>{item.name}</span>
-                                    <span className='width-25 checkout-grey-color'>{item.quantity}</span>
-                                    <span className='width-4 checkout-grey-color'><i className='fa fa-inr'></i></span>
-                                    <span className='checkout-grey-color'>{item.totalPrice}.00</span>
-                                </div>
+                            <Typography variant='h6' color='textSecondary' gutterBottom>
+                                {this.state.customerCart.restaurantDetails.restaurant_name}
+                            </Typography>
+
+                            {this.state.customerCart.cartItems.map((item, index) => (
+                                <Grid style={{marginLeft:"3%", color:"grey", fontSize:"16px"}}container item xs={12} spacing={1} key={index}>
+                                <Grid item xs={1}>
+                                    {item.type === 'VEG' ?  <FiberManualRecord style={{ color: "#008000" }}/> : <FiberManualRecord style={{ color: "#b20505" }}/>}
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <span style={{color:"grey", textTransform:"capitalize", fontSize:16, marginLeft:8}}>{item.name}</span>                        
+                                </Grid>
+                                <Grid item xs={1}>
+                                    {item.quantity}                      
+                                </Grid>
+                                <Grid item xs={1}>               
+                                </Grid>
+                                <Grid  item xs={2}>
+                                <i className="fa fa-inr"></i><span>  {item.price}</span>                        
+                                </Grid>
+                                </Grid>
                             ))}
 
-                            {/* <Typography variant='h6' color='textSecondary' gutterBottom>
-                                {this.state.customerCart.restaurantDetails.restaurant_name}
-                            </Typography> */}
-
                             <Divider className={classes.cardDivider} />
+                            <br/>
 
-                            <div className={classes.netAmount}>
-                                Net Amount
-                                <span className='right'>
-                                    <span className='width-15 checkout-grey-color'>
-                                        <i className='fa fa-inr'></i>
-                                    </span>{this.state.customerCart.totalPrice}.00
-                                </span>                               
-                            </div>
+                            <Grid container item xs={12} >
+                                <Grid item xs={5}>
+                                    <Typography style={{marginLeft:"14%",fontSize:"16px",fontWeight:"bold"}} >
+                                        Net Amount
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4}>                            
+                                </Grid>
+                                <Grid item xs={2}>
+                                    <Typography style={{marginLeft:"3%",fontSize:"16px"}}>                                                       
+                                        <i style={{color:"grey"}}className="fa fa-inr"></i><span>  {this.state.customerCart.totalPrice}</span>
+                                    </Typography>
+                                </Grid>
+                            </Grid>
 
                             <Button
                                 variant='contained'
                                 color='primary'
                                 className={classes.placeOrderButton}
-                                fullWidth={true}>
+                                fullWidth={true}
+                                onClick={this.placeOrderOnClickHandler}
+                                >
                                 Place Order
                             </Button>
                         </CardContent>
@@ -670,11 +721,21 @@ class Checkout extends Component {
 
             <Snackbar anchorOrigin={{
                 vertical: 'bottom',
-                horizontal: 'left',
-                }}
-                ContentProps={{
-                    'aria-describedby': 'message-id',
-                }}
+                horizontal: 'left',}}
+                ContentProps={{'aria-describedby': 'message-id',}}
+                open={this.state.openPlaceOrderMsg}
+                autoHideDuration={5000}
+                onClose={this.placeOrderMsgOnCloseHandler}
+                message={<span id='message-id'>{this.state.placeOrderMsg}</span>}
+                    action={[
+                        <IconButton
+                            key='close'
+                            aria-label='Close'
+                            color='inherit'
+                            onClick={this.placeOrderMsgOnCloseHandler}>
+                        <CloseIcon />
+                        </IconButton>,
+                    ]}
                 ></Snackbar>
             </div>
         );

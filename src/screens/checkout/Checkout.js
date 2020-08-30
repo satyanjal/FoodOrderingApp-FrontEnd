@@ -30,7 +30,7 @@ import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
-//import MenuProps from '@material-ui/core/'
+import Snackbar from '@material-ui/core/Snackbar';
 // import Header
 
 const styles = theme => ({
@@ -157,6 +157,9 @@ class Checkout extends Component {
             payValue: '',
             selectedExistingAddress: null,
             selectedPaymentMode: null,
+            openPlaceOrderMsg: false,
+            orderId: '',
+            placeOrderMsg: '',
             customerCart: {
                 "restaurantDetails": {
                     "restaurant_name": "Gateway Taproom",
@@ -391,6 +394,14 @@ class Checkout extends Component {
         this.setState(preState => ({
             activeStep: preState.activeStep + 1,
         }));
+    };
+
+    placeOrderMsgOnCloseHandler = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openPlaceOrderMsg: false });
     };
 
 
@@ -656,6 +667,15 @@ class Checkout extends Component {
                     </Card>
                 </Grid>
             </Grid>
+
+            <Snackbar anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+                }}
+                ContentProps={{
+                    'aria-describedby': 'message-id',
+                }}
+                ></Snackbar>
             </div>
         );
     }
